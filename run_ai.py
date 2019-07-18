@@ -84,26 +84,43 @@ def executeJENSCAN1():
 
     time.sleep(1)
 
-    #Run through ever price and find the best option based on lowest legit price and good ratio reviews
+    #Run through FIRST PAGE (important because this is a loop) ever price and find the best option based on lowest legit price and good ratio reviews
+    howManyRuns = 5
+    pageNum = 0
+    for pageNum in range(howManyRuns):
+        pageNum += 1
+        itemName = driver.find_elements_by_xpath("//span[@class='a-size-medium a-color-base a-text-normal']")
+        for everyItem in itemName:
+            numofitems += 1
 
-    listOfItems = driver.find_elements_by_xpath("//span[@class='a-size-medium a-color-base a-text-normal']")
-    for everyItem in listOfItems:
-        numofitems += 1
+            vare = everyItem.get_attribute('innerHTML')
 
-        vare = everyItem.get_attribute('innerHTML')
+            time.sleep(0.01)
+            #newvare = vare.replace(".", "")
+            print("Product:", vare)
 
-        time.sleep(0.2)
-        #newvare = vare.replace(".", "")
-        print("Product:", vare)
+        itemPrice = driver.find_elements_by_xpath("//span[@class='a-offscreen']")
+        for everyItem2 in itemPrice:
 
-    listOfItems2 = driver.find_elements_by_xpath("//span[@class='a-offscreen']")
-    for everyItem2 in listOfItems2:
+            scannedItemName = everyItem2.get_attribute('innerHTML')
 
-        scannedItemName = everyItem2.get_attribute('innerHTML')
+            time.sleep(0.01)
+            #newvare = vare.replace(".", "")
+            print("Cost: ", scannedItemName)
 
-        time.sleep(0.2)
-        #newvare = vare.replace(".", "")
-        print("Cost: ", scannedItemName)
+        itemLink = driver.find_elements_by_xpath("//span[@class='a-offscreen']")
+        for everyItem2 in itemPrice:
+
+            scannedItemName = everyItem2.get_attribute('innerHTML')
+
+            time.sleep(0.01)
+            #newvare = vare.replace(".", "")
+            print("Cost: ", scannedItemName)
+
+        time.sleep(3)
+        
+        #next page and loop
+        driver.get(driver.current_url+"&page="+str(pageNum))
 
 
     # listOfItemsStars = driver.find_elements_by_class_name('a-icon-alt')
