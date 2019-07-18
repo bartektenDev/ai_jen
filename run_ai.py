@@ -89,11 +89,22 @@ def executeJENSCAN1():
     listOfItems = driver.find_elements_by_xpath("//span[@class='a-size-medium a-color-base a-text-normal']")
     for everyItem in listOfItems:
         numofitems += 1
-        scannedItemName = driver.find_element_by_xpath("//span[@class='a-offscreen']")
+
         vare = everyItem.get_attribute('innerHTML')
+
         time.sleep(0.2)
         #newvare = vare.replace(".", "")
         print("Product:", vare)
+
+    listOfItems2 = driver.find_elements_by_xpath("//span[@class='a-offscreen']")
+    for everyItem2 in listOfItems2:
+
+        scannedItemName = everyItem2.get_attribute('innerHTML')
+
+        time.sleep(0.2)
+        #newvare = vare.replace(".", "")
+        print("Cost: ", scannedItemName)
+
 
     # listOfItemsStars = driver.find_elements_by_class_name('a-icon-alt')
     # for everyRating in listOfItemsStars:
