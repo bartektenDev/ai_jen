@@ -86,11 +86,11 @@ def executeJENSCAN1():
 
     #Run through ever price and find the best option based on lowest legit price and good ratio reviews
 
-    listOfItems = driver.find_element_by_xpath("//div[@data-cel-widget='search_result_0']")
+    listOfItems = driver.find_elements_by_xpath("//span[@class='a-size-medium a-color-base a-text-normal']")
     for everyItem in listOfItems:
         numofitems += 1
-        scannedItemName = driver.find_element_by_xpath("//span[@class='a-size-medium a-color-base a-text-normal']")
-        vare = scannedItemName.get_attribute('innerHTML')
+        scannedItemName = driver.find_element_by_xpath("//span[@class='a-offscreen']")
+        vare = everyItem.get_attribute('innerHTML')
         time.sleep(0.2)
         #newvare = vare.replace(".", "")
         print("Product:", vare)
