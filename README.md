@@ -1,3 +1,3 @@
 # ai_jen
 
-Jen is an artificial intelligence python script that scans the internet for the next hot item for a good price so that you can resell with dropshipping.
+AI_Jen is a smart tool that helps find low prices for items with the best rating across big brands.
