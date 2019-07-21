@@ -5,7 +5,9 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from pyautogui import press, typewrite, hotkey
 from xlwt import Workbook
+from selenium.webdriver.common.keys import Keys
 
+import os
 import subprocess as sp
 import requests
 import time
@@ -19,9 +21,9 @@ def initializeJEN():
     #Run AI
     print('BOOTING JEN...')
 
-    time.sleep(3)
-    # WINDOWS tmp = sp.call('cls',shell=True)
-    # LINUX tmp = sp.call('clear',shell=True)
+    time.sleep(1)
+    # WINDOWS tmp = sp.call('clear',shell=True)
+    # LINUX tmp = sp.call('cls',shell=True)
     tmp = sp.call('cls',shell=True)
     print("Jen is ready.")
 
@@ -31,7 +33,7 @@ def initializeJEN():
 
 
 def pickItem():
-    global userSearchItemName, userSelectScanType
+    global userSearchItemName, userSelectScanType, userAliExpressLoginEmail, userAliExpressLoginPassword, userEbayLoginEmail, userEbayLoginPassword
     #Select AI search intensity
     print("Please select type of scan (1-4): ")
     print("1 - Amazon (Best and Cheapest Item Scan)")
@@ -61,6 +63,16 @@ def pickItem():
     elif userSelectScanType.startswith('2'):
         print("You chose AliExpress -> Ebay Listing [Auto]")
         time.sleep(1)
+        tmp = sp.call('cls',shell=True)
+        # userAliExpressLoginEmail = input("Enter AliExpress Login Email: ")
+        # userAliExpressLoginPassword = input("Enter AliExpress Login Password: ")
+        # userEbayLoginEmail = input("Enter Ebay Login Email: ")
+        # userEbayLoginPassword = input("Enter Ebay Login Password: ")
+
+        userAliExpressLoginEmail = "bartek8991@live.com"
+        userAliExpressLoginPassword = "Password1234"
+        userEbayLoginEmail = ""
+        userEbayLoginPassword = ""
         print("INITIALIZING SCAN.")
         time.sleep(1)
         tmp = sp.call('cls',shell=True)
@@ -69,7 +81,7 @@ def pickItem():
         time.sleep(1)
         tmp = sp.call('cls',shell=True)
         time.sleep(0.1)
-        print("INITIALIZING SCAN..")
+        print("INITIALIZING SCAN...")
         time.sleep(1)
         tmp = sp.call('cls',shell=True)
         time.sleep(0.1)
@@ -85,7 +97,7 @@ def pickItem():
 
 
 def amazonWebBestandCheapItemScan():
-    global userSearchItemName, userSelectScanType, numofitems, numofprices, numofgucciprice, numofratings, sheet1, wb, scannedItemPrice, scannedItemRating
+    global userSearchItemName, userSelectScanType, userAliExpressLoginEmail, userAliExpressLoginPassword, userEbayLoginEmail, userEbayLoginPassword, numofitems, numofprices, numofgucciprice, numofratings, sheet1, wb, scannedItemPrice, scannedItemRating
     tmp = sp.call('cls',shell=True)
     print("Running...")
 
@@ -130,7 +142,7 @@ def amazonWebBestandCheapItemScan():
         pageNum += 1
 
         #Item Name of the Product
-        itemName = driver.find_elements_by_xpath("//span[@class='a-size-medium a-color-base a-text-normal']")
+        itemName = driver.find_elements_by_xpath("//a[@class='item-title']")
         for everyItem in itemName:
             numofitems += 1
 
@@ -191,7 +203,7 @@ def amazonWebBestandCheapItemScan():
 
 
 def aliExpressToEbayAutomation():
-    global userSearchItemName, userSelectScanType, numofitems, numofprices, numofgucciprice, numofratings, sheet1, wb, scannedItemPrice, scannedItemRating
+    global userSearchItemName, userSelectScanType, userAliExpressLoginEmail, userAliExpressLoginPassword, userEbayLoginEmail, userEbayLoginPassword, numofitems, numofprices, numofgucciprice, numofratings, sheet1, wb, scannedItemPrice, scannedItemRating
     tmp = sp.call('cls',shell=True)
     print("Running...")
 
@@ -201,6 +213,7 @@ def aliExpressToEbayAutomation():
     driver = webdriver.Chrome()
     #Load page
     driver.get(targetDatabaseURL)
+    time.sleep(4)
     #Page Loaded, check if popup is in the way. delete if so
     element = driver.find_element_by_xpath("//a[@class='close-layer']")
     element.click()
@@ -210,34 +223,63 @@ def aliExpressToEbayAutomation():
     #Sign in so we can search
     element = driver.find_element_by_xpath("//a[@data-role='myaliexpress-link']")
     element.click()
-    time.sleep(0.5)
-    element = driver.find_element_by_xpath("//a[@class='sign-in']")
+    time.sleep(1)
+    element = driver.find_element_by_xpath("//a[@data-role='sign-link']")
     element.click()
-
-    time.sleep(0.5)
-
-    element = driver.find_element_by_xpath("//input[@id='search-key']")
-    element.click()
-
     time.sleep(2)
 
-    #Enter item to search using fake paste
+    for x in range(0, 2):
+        time.sleep(0.2)
+        driver.switch_to_active_element().send_keys(Keys.TAB)
+
+    time.sleep(1)
+    typewrite(userAliExpressLoginEmail)
+    time.sleep(2)
+
+    for x in range(0, 1):
+        time.sleep(0.2)
+        driver.switch_to_active_element().send_keys(Keys.TAB)
+
+    typewrite(userAliExpressLoginPassword)
+    time.sleep(2)
+
+    for x in range(0, 1):
+        time.sleep(0.2)
+        driver.switch_to_active_element().send_keys(Keys.ENTER)
+
+    time.sleep(5)
+
+    element = driver.find_element_by_xpath("//a[@class='close-layer']")
+    element.click()
+    time.sleep(2)
+    element = driver.find_element_by_xpath("//input[@class='search-key']")
+    element.click()
+    time.sleep(2)
     typewrite(userSearchItemName)
     time.sleep(2)
+    element = driver.find_element_by_xpath("//input[@class='search-button']")
+    element.click()
+
+    time.sleep(4)
+
+    driver.get(driver.current_url+"&page=1")
 
     numofitems = 0
     numofprices = 0
     numofratings = 0
     numofgucciprice = 0
 
-    #Enter search box
-    element = driver.find_element_by_xpath("//input[@class='search-button']")
-    element.click()
+    time.sleep(4)
 
-    time.sleep(1)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    #get current url for later changing page numbers to grab data
+    baseSearchURL = driver.get(driver.current_url)
+
+    time.sleep(2)
 
     #Run through FIRST PAGE (important because this is a loop) ever price and find the best option based on lowest legit price and good ratio reviews
-    howManyRuns = 1
+    howManyRuns = 3
     pageNum = 1
 
     # Workbook is created
@@ -247,21 +289,24 @@ def aliExpressToEbayAutomation():
     sheet1 = wb.add_sheet('Sheet 1')
 
     for pageNum in range(howManyRuns):
+        fullstring = baseSearchURL + "&page=" + str(pageNum)
+        driver.get(fullstring)
         pageNum += 1
 
-        #Item Name of the Product
+        #Item Price of the Product
         itemName = driver.find_elements_by_xpath("//a[@class='item-title']")
         for everyItem in itemName:
-            numofitems += 1
+            numofprices += 1
 
-            vare = everyItem.get_attribute('innerHTML')
+            scannedItemName = everyItem.get_attribute('innerHTML')
+            #sheet1.write(1, 0, 'ISBT DEHRADUN')
 
-            time.sleep(0.01)
+            #time.sleep(0.05)
 
-            sheet1.write(numofitems, 0, vare)
+            #sheet1.write(numofprices, 1, scannedItemPrice)
 
             #newvare = vare.replace(".", "")
-            print("Product:", vare)
+            print("Product Name: ", scannedItemName)
 
         #Item Price of the Product
         itemPrice = driver.find_elements_by_xpath("//span[@class='price-current']")
@@ -271,7 +316,7 @@ def aliExpressToEbayAutomation():
             scannedItemPrice = everyItem2.get_attribute('innerHTML')
             #sheet1.write(1, 0, 'ISBT DEHRADUN')
 
-            time.sleep(0.01)
+            #time.sleep(0.05)
 
             #sheet1.write(numofprices, 1, scannedItemPrice)
 
@@ -285,17 +330,14 @@ def aliExpressToEbayAutomation():
 
             scannedItemRating = everyItem3.get_attribute('innerHTML')
 
-            time.sleep(0.01)
+            #time.sleep(0.05)
 
             #sheet1.write(numofprices, 3, scannedItemRating)
 
             #newvare = vare.replace(".", "")
             print("Rating: ", scannedItemRating)
 
-        time.sleep(3)
-
-        #next page and loop
-        driver.get(driver.current_url+"&page="+str(pageNum))
+        time.sleep(7)
 
     #Write the file with collected data
     wb.save(str(userSearchItemName)+'_LIST.xlsx')
@@ -303,7 +345,7 @@ def aliExpressToEbayAutomation():
     time.sleep(2)
     print("Jen has finished scanning!")
     time.sleep(2)
-    print("Scanned", numofitems,"products. Found", numofgucciprice, "with a great price. Check log file `dropLIST.txt`")
+    print("Scanned", numofitems,"products. Found", numofgucciprice, "with a great price. Check log file: "+str(userSearchItemName)+"_LIST.xlsx")
     print("Shutting down..")
     time.sleep(3)
     #Close browser. We are done searching.
