@@ -213,7 +213,7 @@ def aliExpressToEbayAutomation():
     driver = webdriver.Chrome()
     #Load page
     driver.get(targetDatabaseURL)
-    time.sleep(3)
+    time.sleep(4)
     #Page Loaded, check if popup is in the way. delete if so
     element = driver.find_element_by_xpath("//a[@class='close-layer']")
     element.click()
@@ -260,31 +260,23 @@ def aliExpressToEbayAutomation():
     element = driver.find_element_by_xpath("//input[@class='search-button']")
     element.click()
 
-    os.system("pause")
-    time.sleep(0.5)
+    time.sleep(4)
 
-    element = driver.find_element_by_xpath("//input[@id='search-key']")
-    element.click()
-
-    time.sleep(2)
-
-    #Enter item to search using fake paste
-    typewrite(userSearchItemName)
-    time.sleep(2)
+    driver.get(driver.current_url+"&page=1")
 
     numofitems = 0
     numofprices = 0
     numofratings = 0
     numofgucciprice = 0
 
-    #Enter search box
-    element = driver.find_element_by_xpath("//input[@class='search-button']")
-    element.click()
+    time.sleep(4)
 
-    time.sleep(1)
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+    time.sleep(2)
 
     #Run through FIRST PAGE (important because this is a loop) ever price and find the best option based on lowest legit price and good ratio reviews
-    howManyRuns = 1
+    howManyRuns = 3
     pageNum = 1
 
     # Workbook is created
@@ -295,20 +287,6 @@ def aliExpressToEbayAutomation():
 
     for pageNum in range(howManyRuns):
         pageNum += 1
-
-        #Item Name of the Product
-        itemName = driver.find_elements_by_xpath("//a[@class='item-title']")
-        for everyItem in itemName:
-            numofitems += 1
-
-            vare = everyItem.get_attribute('innerHTML')
-
-            time.sleep(0.01)
-
-            sheet1.write(numofitems, 0, vare)
-
-            #newvare = vare.replace(".", "")
-            print("Product:", vare)
 
         #Item Price of the Product
         itemPrice = driver.find_elements_by_xpath("//span[@class='price-current']")
@@ -339,7 +317,7 @@ def aliExpressToEbayAutomation():
             #newvare = vare.replace(".", "")
             print("Rating: ", scannedItemRating)
 
-        time.sleep(3)
+        time.sleep(7)
 
         #next page and loop
         driver.get(driver.current_url+"&page="+str(pageNum))
@@ -350,7 +328,7 @@ def aliExpressToEbayAutomation():
     time.sleep(2)
     print("Jen has finished scanning!")
     time.sleep(2)
-    print("Scanned", numofitems,"products. Found", numofgucciprice, "with a great price. Check log file `dropLIST.txt`")
+    print("Scanned", numofitems,"products. Found", numofgucciprice, "with a great price. Check log file: "+str(userSearchItemName)+"_LIST.xlsx")
     print("Shutting down..")
     time.sleep(3)
     #Close browser. We are done searching.
